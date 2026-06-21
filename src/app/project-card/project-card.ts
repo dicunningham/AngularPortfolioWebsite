@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { Project } from '../_models/Project';
 
 @Component({
   selector: 'app-project-card',
@@ -7,5 +8,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './project-card.css',
 })
 export class ProjectCard {
-  readonly projectName = input<string>('');
+  readonly project = input({} as Project);
 }
