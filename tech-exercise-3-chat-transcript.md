@@ -18,6 +18,7 @@ Videos used for this exercise:
 5. *08: Building out the Home Page* — building out the home page
 6. *09: Creating the Project Cards* — creating the project card component, the first step in building out the portfolio section
 7. *10: Passing Data Between Components* — structuring project data to make it easier to pass between components
+8. *11: Setting up a Service for our Projects* — setting up a service to supply project data to multiple parts of the site
 
 ## How this tool was used
 
@@ -151,6 +152,36 @@ Notes:
 - The `<ng-container>` wrapper can be dropped entirely; `@for` is a structural block, not a directive attached to a host element.
 - `track` should reference something uniquely identifying each item; tracking by index (`track $index`) is a reasonable choice when list items are objects without a natural unique key, or when the list is short and static, as used here for the `Tag` class instances.
 - `@for` blocks support an optional built-in `@empty` block for empty-list states, replacing the need for a separate `*ngIf` check.
+
+---
+
+### Q: Converting the portfolio's project card markup to `@for`, but it's not quite right: `@for (project of projects; track $index) { }` with the `<app-project-card>` left outside the block.
+
+**A:** Two issues: the `@for` block was empty, with the content that should repeat left outside its braces instead of inside; and the surrounding grid column `<div>` needed to move inside the block too, since one column+card pair should be generated per project, not one column wrapping all cards.
+
+```html
+@for (project of projects; track $index) {
+  <div class="col-lg col-md-6 mb-4" style="max-width: 380px; min-width: 380px;">
+    <app-project-card [project]="project"></app-project-card>
+  </div>
+}
+```
+
+Also flagged: the component class needed an actual `projects` array to loop over, replacing the single hardcoded `project` object from the prior video, since `@for` needs a collection, not a single object.
+
+---
+
+### Q: VS Code showed an error on `projects: Project[] as Project[];` and suggested `import as from '@angular/common/locales/extra/as';`. Should that import be added?
+
+**A:** No. That suggested import is for the **Assamese locale code** (`as`), unrelated to the actual problem; VS Code's auto-import was pattern-matching on the literal text `as` and guessing incorrectly.
+
+The real issue: `as` is a TypeScript type assertion keyword, and applying it to a property declaration like `Project[] as Project[]` doesn't make sense, a type annotation alone already tells TypeScript what the property is:
+
+```typescript
+projects: Project[] = [];
+```
+
+`as` assertions are useful when TypeScript can't infer a type correctly on its own (e.g., `input({} as Project)` from video 10, where an empty object wouldn't otherwise satisfy the `Project` interface), but a plain typed property declaration doesn't need one.
 
 ---
 
