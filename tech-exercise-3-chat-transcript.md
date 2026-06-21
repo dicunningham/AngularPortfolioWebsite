@@ -16,6 +16,8 @@ Videos used for this exercise:
 3. *06: Creating the Navigation Bar* — creating and styling the navigation bar
 4. *07: Routing and Navigation in Angular* — making the navigation bar functional by implementing routing
 5. *08: Building out the Home Page* — building out the home page
+6. *09: Creating the Project Cards* — creating the project card component, the first step in building out the portfolio section
+7. *10: Passing Data Between Components* — structuring project data to make it easier to pass between components
 
 ## How this tool was used
 
@@ -124,6 +126,31 @@ This confirmed the project uses the newer Angular CLI **`public/` folder** conve
 ```html
 <img src="images/profile.jpg" alt="Profile picture">
 ```
+
+---
+
+### Q: VS Code shows `*ngFor` as deprecated, recommending `@for` instead. The tutorial uses `<ng-container *ngFor="let tag of project().tags">`. How do I convert it?
+
+**A:** `*ngFor` still works (deprecated, not removed), but Angular's modern `@for` block syntax replaces it and is the recommended path going forward. Unlike `*ngFor`, `@for` requires an explicit `track` expression so Angular can identify each item across re-renders.
+
+Translation:
+
+```html
+<!-- Old -->
+<ng-container *ngFor="let tag of project().tags">
+  <!-- content -->
+</ng-container>
+
+<!-- New -->
+@for (tag of project().tags; track tag) {
+  <!-- content -->
+}
+```
+
+Notes:
+- The `<ng-container>` wrapper can be dropped entirely; `@for` is a structural block, not a directive attached to a host element.
+- `track` should reference something uniquely identifying each item; tracking by index (`track $index`) is a reasonable choice when list items are objects without a natural unique key, or when the list is short and static, as used here for the `Tag` class instances.
+- `@for` blocks support an optional built-in `@empty` block for empty-list states, replacing the need for a separate `*ngIf` check.
 
 ---
 
